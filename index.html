@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Splitter</title>
+<style>
+body{font-family:Arial;background:#ecfdf5;padding:25px}
+main{max-width:550px;margin:auto;background:white;padding:30px;border-radius:16px}
+input,textarea{width:100%;padding:12px;box-sizing:border-box;margin:10px 0;border:1px solid #6ee7b7;border-radius:8px}
+textarea{height:140px}
+button{background:#059669;color:white;border:0;padding:14px 20px;border-radius:8px;cursor:pointer;width:100%}
+#result{background:#d1fae5;padding:20px;border-radius:10px;margin-top:20px;white-space:pre-wrap;line-height:2}
+</style>
+</head>
+<body>
+<main>
+<h1>Expense Splitter</h1>
+<p>Share expenses equally among friends.</p>
+<label>Total Expense</label>
+<input id="amount" type="number" min="0" step="any" placeholder="Enter total amount">
+<label>Participants</label>
+<textarea id="names" placeholder="Enter one name per line"></textarea>
+<button onclick="split()">Split Expenses</button>
+<div id="result">Your expense breakdown will appear here.</div>
+</main>
+<script>
+function split(){
+ const field=document.getElementById("amount");
+ const amount=Number(field.value);
+ const names=document.getElementById("names").value
+ .split(/\r?\n/).map(n=>n.trim()).filter(Boolean);
+ const output=document.getElementById("result");
+ if(field.value===""||amount<0||!names.length){
+  output.textContent="Enter a valid amount and participant names.";
+  return;
+ }
+ const cents=Math.round(amount*100);
+ const share=Math.floor(cents/names.length);
+ const remainder=cents%names.length;
+ const details=names.map((name,i)=>
+ name+": "+((share+(i<remainder?1:0))/100).toFixed(2));
+ output.textContent="Total: "+(cents/100).toFixed(2)+
+ "\nParticipants: "+names.length+"\n\n"+details.join("\n");
+}
+</script>
+</body>
+</html>
